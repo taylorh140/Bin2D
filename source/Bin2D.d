@@ -5,7 +5,7 @@ import std.stdio : writeln, File, SEEK_CUR, write, stdout;
 import std.string : indexOf, lastIndexOf, tr;
 import std.path : baseName, dirName;
 import std.math : ceil;
-import std.conv;
+import std.conv: to;
 
 static ubyte[4096] buffer;
 
@@ -50,7 +50,7 @@ int main(string[] args) {
 				" * Copyright: Richard (Rikki) Andrew Cattermole 2014 - 2015\n * \n",
 				" * Using_Command: ");
 		foreach(arg; originalArgs) {
-			output.write(arg ~ " ");
+			output.write(arg , " ");
 		}
 		
 		output.seek(-1, SEEK_CUR);
@@ -193,9 +193,9 @@ in {
 		foreach(i, file; files) {	
 			// output file contents
 			if (useEnum)
-				output.write("enum ubyte[] "  , " /*"~filenames[i]~"*/ "~ "FILE_"~to!string(i) , " = x\"");
+				output.write("enum ubyte[] "  , " /*",filenames[i],"*/ ", "FILE_",to!string(i) , " = x\"");
 			else
-				output.write("const(ubyte[]) ", " /*"~filenames[i]~"*/ "~ "FILE_"~to!string(i) , " = cast(const(ubyte[]))x\"");
+				output.write("const(ubyte[]) ", " /*",filenames[i],"*/ ", "FILE_",to!string(i) , " = cast(const(ubyte[]))x\"");
 			
 			File readFrom = File(file, "rb");
 			
@@ -282,7 +282,7 @@ in {
 			output.write("const(ubyte[]*[]) values = [");
 		
 		foreach(i, name; filenames) {
-			output.write("&", "FILE_"~to!string(i)~" /*"~name~"*/" , ", ");
+			output.write("&", "FILE_",to!string(i)," /*",name,"*/" , ", ");
 		}
 		output.seek(-2, SEEK_CUR);
 		output.write("];");
