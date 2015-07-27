@@ -31,6 +31,34 @@ I added the Bin2d.exe to my path for convience.
 
 ```Bin2D MODULE.d=Resource_Reference library tk86t.dll tcl86t.dll "my tkd app.exe" ```
 
+This generates a short report
+```
+|-------------------------------------------------------------|
+|                           REPORT                            |
+|------------------------------|------------------------------|
+|           tcl86t.dll          |           tcl86t_dll          |
+|           tk86t.dll           |           tk86t_dll           |
+|        library/auto.tcl       |            auto_tcl           |
+|      library/bgerror.tcl      |          bgerror_tcl          |
+|       library/button.tcl      |           button_tcl          |
+|     library/choosedir.tcl     |         choosedir_tcl         |
+|       library/clock.tcl       |           clock_tcl           |
+
+...
+
+|   library/ttk/vistaTheme.tcl  |         vistaTheme_tcl        |
+|    library/ttk/winTheme.tcl   |          winTheme_tcl         |
+|    library/ttk/xpTheme.tcl    |          xpTheme_tcl          |
+|    library/unsupported.tcl    |        unsupported_tcl        |
+|        library/word.tcl       |            word_tcl           |
+|       library/xmfbox.tcl      |           xmfbox_tcl          |
+|         my tkd app.exe        |         my tkd app_exe        |
+|------------------------------|------------------------------|
+```
+
+The first column is the relative path. 
+The second are the identifier names for using in D.
+
 Create this(MAIN.d) file and added to my C:\temp folder.
 ```D
 import std.stdio;
