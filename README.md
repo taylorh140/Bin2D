@@ -35,16 +35,21 @@ Create this(MAIN.d) file and added to my C:\temp folder.
 ```D
 import std.stdio;
 import std.process;
-import PKG = Resource_Reference;
+import PKG = Resource_Reference; /*It might be best to alias due to "values" being 
+                                   a scope variable which might interfer with 
+                                   associtive array's "values" variable.*/
 
 void main() {
-    string[string] FILE_LOCATIONS = PKG.outputFilesToFileSystem();
+    /*Extract Files to temporary folder, returns an array that you can 
+      get files absolute location from relative path*/
+    string[string] FILE_LOCATIONS = PKG.outputFilesToFileSystem(); 
     
     foreach(string key; PKG.originalNames){
           writeln("extracting: ", key , " : " , FILE_LOCATIONS[key] );
     }
-    execute(FILE_LOCATIONS["my tkd app.exe"]);
-    PKG.cleanup();
+    
+    execute(FILE_LOCATIONS["my tkd app.exe"]); //Executes the program an waits for it to complete
+    PKG.cleanup(); //deletes all extract files
 }
 ```
 Compile with:
@@ -52,27 +57,53 @@ Compile with:
 ```dmd MAIN.d MODULE.d```
 
 If you want to do what I did with a gui app you might want to link to windows:subsystem.
-## But what if I don't know the name at compile time?
-To get access to *all* the values with names you need to iterate over two seperate arrays.
-The first ``names`` will give you the mangled names. The second ``values`` will give you the values based upon the index in assetNames.
 
-## So how do you extract?
+```dmd MAIN.d MODULE.d -L/subsystem:windows```
 
-This will extract any files given to it. With specific output directory.
-It returns an array of the file systems names with the original extension. Directories have been encoded away however.
+## Generated Module Api
+
+Since the module have very little generated code it is nice to have all the functions and variables listed out.
+### Variables
 ```D
-import modulename;
-outputFilesToFileSystem("output/stored/here");
+string rootDirectory
 ```
 
-**And for a temporary directories?**
+- Contains the location that files were extracted too. It is undefined if you haven't extracted them
 ```D
-import modulename;
-outputFilesToFileSystem();
+const(string[]) names
 ```
-It does return the same result as output outputBin2D2FS(string) does.
 
-## Why not string mixins?
-- String mixins at least on Windows are bugged. They cannot use subdirectories.
-- Assets do not change often so regeneration process can be manual
-- Easy export to file system
+- Contains A list of File Identifiers that D uses to store the files.
+```D
+const(string[]) originalNames
+```
+
+- Contains A list of relative paths (relative to where they BIN2d created them from) for each file.
+
+```D
+const(ubyte[]*[]) values
+```
+
+- This is an Array of pointers to all the raw hex data for each resource. (You can use the resources with-out extracting them you know?)
+
+### Functions
+
+```D
+void cleanup();
+```
+- Recursivly removes all files inside of the rootDirectory and deletes the rootDirectory
+
+```D
+string[string] outputFilesToFileSystem();
+```
+- Creates a new temporary folder and extracts files to that folder.
+- Creates sub-folders as necessary for files to be extracted too.
+- Returns an array of absolute paths that are keyed by relative path strings.
+
+```D
+string[string] outputFilesToFileSystem(string dir);
+```
+- Creates the dir folder.
+- If the dir folder already exist it will delete all its contents before extraction.
+- Creates sub-folders as necessary for files to be extracted too.
+- Returns an array of absolute paths that are keyed by relative path strings.
