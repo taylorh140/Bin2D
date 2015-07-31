@@ -68,7 +68,7 @@ int main(string[] args) {
 		output.write(
 /*BEGIN FILE HEADER*/   
 `
-import std.file : write, isDir, exists, mkdirRecurse, rmdirRecurse, tempDir, mkdir;
+import std.file : write, isDir, exists, mkdirRecurse, rmdirRecurse, tempDir;
 import std.path : buildPath, dirName;
 import std.process : thisProcessID;
 import std.conv : text;
@@ -114,7 +114,7 @@ in {
 		string realname = originalNames[i];
     if(! buildPath(dir, realname).dirName().exists())
     {
-      mkdir(cast(string)buildPath(dir, realname).dirName());
+      mkdirRecurse(cast(string)buildPath(dir, realname).dirName());
     }
 		files[cast(string)realname] ~= cast(string)buildPath(dir, realname);
 		write(buildPath(dir, realname), *values[i]);
